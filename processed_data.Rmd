@@ -1,0 +1,36 @@
+---
+title: "clean data compatible with the multiverse analysis"
+output: html_document
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+## libraries
+```{r}
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+```
+
+## import data
+```{r}
+processed_1 <- read.csv("104_processed_data.csv")
+```
+
+## selecting relevant variables, filtering correct trials 
+```{r}
+processed_2 <- processed_1 %>% 
+  select(rt, subj_code, congruency, prev_congruency, correct, prev_correct) %>% 
+  mutate(congruency = ifelse(congruency == "congruent", 0.5, -0.5), 
+         prev_congruency = ifelse(prev_congruency == "congruent", 0.5, -0.5)) ## %>% 
+  ## filter(
+  ##  correct != 0, 
+  ##  prev_correct != 0
+  ## ) %>% 
+  ## select(-correct, -prev_correct)
+```
+
+## write.csv
+```{r}
+write.csv(processed_2, "raw_1.csv")
+```
+
