@@ -4,11 +4,18 @@ import statsmodels.formula.api as smf
 
 from nodes import apply_outliers
 from nodes import fit_models
+from nodes import transform_rt
 
 # data
-data = pd.read_csv("raw_1.csv")
+data = pd.read_csv("raw_1.csv").query("rt > 150")
+print(data)
 
 # outlier filtering
 filtered_test = apply_outliers(data, method = "sd", threshold = 3)
 
-models_test = fit_models(filtered_test, model_type = "intercept")
+transform_rt(data = filtered_test, method = "log")
+
+model_test = fit_models(data = filtered_test, model_type = "lmm-full")
+summary = model_test.summary()
+
+print(summary)
