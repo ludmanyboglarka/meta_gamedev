@@ -13,6 +13,7 @@ print(raw_data.head())
 #' Return: two possible outcomes
 #' ----------------------------------------------
 def apply_outliers(data, method, threshold):
+    
     if method == "sd": 
 
         method = method.strip() # removes space/new lines
@@ -37,6 +38,7 @@ def apply_outliers(data, method, threshold):
             processed_sd_data["rt_z_score"].abs() < threshold 
         ] ## keeping rows where the fits the threshold requirements
         return processed_sd_data 
+    
     elif method == "accuracy":
         accuracy_sum = (
             data
@@ -100,7 +102,7 @@ def fit_models(data, model_type):
     model_data["prev_congruency"] = model_data["prev_congruency"].astype("category")
 
     # rt_used: 
-    formula = "rt_used ~ congruency * prev_congruency"
+    formula = "rt ~ congruency * prev_congruency"
 
     if model_type == "lmm-intercept":
         # model 

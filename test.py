@@ -13,7 +13,7 @@ print(data)
 # outlier filtering
 filtered_test = apply_outliers(data, method = "sd", threshold = 3)
 
-transform_rt(data = filtered_test, method = "log")
+transform_rt(data = filtered_test, method = "raw")
 
 model_test = fit_models(data = filtered_test, model_type = "lmm-full")
 summary = model_test.summary()

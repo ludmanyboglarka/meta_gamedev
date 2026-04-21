@@ -45,10 +45,10 @@ for r in results:
     p = r['p_value']
 
     print(
-        f"{r['method']}, {r['threshold']}, {r['transform']}, {r['model']} | "
+        f"{r['outlier_method']}, {r['threshold']}, {r['transformed']}, {r['model']} | "
         f"coef = {coef if coef is None else round(coef, 4)}, "
-        f"p = {p if p is None else round(p, 4)}, "
+        f"p = {p if p is None else f'{p:.4g}'}, "
         f"n = {r['n_obs']}"
     )
 
-## TODO: STORE RESULTS IN A DESIGNATED OBJECT - fix small error: f"{r['method']}, {r['threshold']}, {r['transform']}, {r['model']} | " KeyError: 'method'
+## TODO: STORE RESULTS IN A DESIGNATED OBJECT - 
