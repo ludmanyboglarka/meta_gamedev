@@ -1,3 +1,5 @@
+#' DEFINING THE DECISION NODES
+
 import pandas as pd
 import numpy as np
 import statsmodels.api as sm
@@ -13,7 +15,7 @@ print(raw_data.head())
 #' Return: two possible outcomes
 #' ----------------------------------------------
 def apply_outliers(data, method, threshold):
-    
+
     if method == "sd": 
 
         method = method.strip() # removes space/new lines
@@ -31,8 +33,8 @@ def apply_outliers(data, method, threshold):
         processed_sd_data = ( ## join summary and calculate z scores
             valid_sd_data
             .merge(participant_summary, on = ['subj_code', 'congruency', 'prev_congruency'], how = 'left') ## left joining the summaries by row, by condition
-            .assign(rt_z_score=lambda df:
-                     (df['rt'] - df['participant_mean_rt']) / df['participant_sd_rt']) ## calculating z-score by participant - necessary for sd filtering 
+            .assign(rt_z_score = lambda valid_sd_data:
+                     (valid_sd_data['rt'] - valid_sd_data['participant_mean_rt']) / valid_sd_data['participant_sd_rt']) ## calculating z-score by participant - necessary for sd filtering 
         )
         processed_sd_data = processed_sd_data[
             processed_sd_data["rt_z_score"].abs() < threshold 
@@ -76,7 +78,7 @@ def transform_rt(data, method):
         if (transform_data["rt"] <= 0).any():
             raise ValueError("RT contains non-positive values; cannot take log.")
         log_data = transform_data
-        log_data["rt_used"] = np.log(log_data["rt"])
+        log_data["rt"] = np.log(log_data["rt"])
 
         return log_data
     else:
@@ -188,3 +190,5 @@ def extract_results(model):
         "p_value": p_values[interaction], 
         "n_obs": model.nobs
     }
+
+# R squared, results to .txt

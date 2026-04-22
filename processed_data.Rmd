@@ -4,6 +4,8 @@ output: html_document
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 ---
 
+## creating a processed data frame - the input data is already pre-processed, the pre-processing is not yet added to the repository.
+
 ## libraries
 ```{r}
 library(tidyverse)

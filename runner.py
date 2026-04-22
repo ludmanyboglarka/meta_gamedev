@@ -1,3 +1,5 @@
+#' RUNNER FOR THE MULTIVERSE ANALYSIS
+
 import pandas as pd
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
@@ -9,9 +11,11 @@ from nodes import extract_results
 
 data = pd.read_csv("raw_1.csv").query("rt > 150")
 
+#' Defining the decision nodes, and the decision options 
 outlier_options = [
     ("sd", 2),
     ("sd", 3),
+    ("accuracy", 0.6),
     ("accuracy", 0.7),
     ("accuracy", 0.8),
     ("no-filter", None)
@@ -21,6 +25,7 @@ model_types = ["lmm-full", "lmm-intercept", "lmm-intercept-slope"]
 
 results = []
 
+#' fitting the data onto the nodes, and creating the multiverse analysis regarding all valid combinations and pipelines
 for method, threshold in outlier_options: 
     for t in transform: 
         for model in model_types:
@@ -44,11 +49,15 @@ for r in results:
     coef = r['coeff']
     p = r['p_value']
 
-    print(
+    results = print(
         f"{r['outlier_method']}, {r['threshold']}, {r['transformed']}, {r['model']} | "
-        f"coef = {coef if coef is None else round(coef, 4)}, "
-        f"p = {p if p is None else f'{p:.4g}'}, "
+        f"coef = {coef if coef is None 
+                  else round(coef, 4)}, "
+        f"p = {p if p is None 
+               else f'{p:.4g}'}, "
         f"n = {r['n_obs']}"
     )
 
-## TODO: STORE RESULTS IN A DESIGNATED OBJECT - 
+## TODO: STORE RESULTS IN A DESIGNATED OBJECT - DATA FRAME, .CSV THAT CAN BE USED LATER 
+# miert kulonbozik ugyanaz a modell, de r-ben? miert mas a p-ertek? 
+# az n obs szukseges egyaltalan? - ugye ez csak a sorok szama, de nem tudom, hogy ez max az outliereken kivul mas szempontjabol relevans-e
