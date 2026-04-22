@@ -48,6 +48,8 @@ for method, threshold in outlier_options:
 for r in results: 
     coef = r['coeff']
     p = r['p_value']
+    R2_m = r['R2_marg'], 
+    R2_c = r['R2_cond']
 
     results = print(
         f"{r['outlier_method']}, {r['threshold']}, {r['transformed']}, {r['model']} | "
@@ -55,9 +57,10 @@ for r in results:
                   else round(coef, 4)}, "
         f"p = {p if p is None 
                else f'{p:.4g}'}, "
-        f"n = {r['n_obs']}"
+        f"n = {r['n_obs']} | "
+        f"R2_m = {r['R2_marg']}, "  
+        f"R2_c = {r['R2_cond']} "
     )
 
 ## TODO: STORE RESULTS IN A DESIGNATED OBJECT - DATA FRAME, .CSV THAT CAN BE USED LATER 
 # miert kulonbozik ugyanaz a modell, de r-ben? miert mas a p-ertek? 
-# az n obs szukseges egyaltalan? - ugye ez csak a sorok szama, de nem tudom, hogy ez max az outliereken kivul mas szempontjabol relevans-e

@@ -151,25 +151,45 @@ def fit_models(data, model_type):
         raise ValueError(f"Unknown model_type: {model_type}")
     
 
-# TODO: ERROR HANDLING
-# nem fittel a modell - dokumentalni kell, hogy milyen jellegu a nem fittelodes. nem konvergal, vagy singular fit lesz belole
+# TODO: nem fittel a modell - majd kesobb dokumentalni kell, hogy milyen jellegu a nem fittelodes. nem konvergal, vagy singular fit lesz belole
 # csak azt irja ki amit kiir az error message - vagy csak elmenti az adatba 
+    # interakcio szign, ill az r2-nek a modellben nagyobbnak kell lennie, mint a nullmodellben 
+    # - elteresuk szignifikans, illetve a bic, aic nek is alacsonyabbnak kell lennie
+
+
+# TODO: cse feltetelei ugymond:  
 
 #' ----------------------------------------------
 #' NODE 5: EXTRACT RESULTS 
 #' ----------------------------------------------
 def extract_results(model):
 
+    # CALCULATE FIXED R^2
+
+
+    # Fixed effect and Random effect variance components
+    fixed_effects_variance = np.var(model.fittedvalues)
+    random_effects_variance = model.cov_re.iloc[0, 0]
+    residual_variance = model.scale
+
+    # Calculate Marginal and Conditional R^2 from theese extracted variances:
+    R2_m = fixed_effects_variance / (fixed_effects_variance + random_effects_variance + residual_variance) # csak a fixed effectek magyarazzak  
+    R2_c = (fixed_effects_variance + random_effects_variance) / (fixed_effects_variance + random_effects_variance + residual_variance) # a teljes modell magyarazza - a resztvevok kozotti kulonbseget is tartalmazza: ha magasabb mint a marginal, akkor a fixed effectseken kivul a resztvevok kozotti kulonbseg is magyarazott
+
     # if model failed, there was an error
     if model is None: 
         return {
             "coeff": None, 
             "p_value": None, 
+            "R2_m": None, 
+            "R2_c": None,          
             "n_obs": None
         }
 
     params = model.params
     p_values = model.pvalues
+    r2_marginal = R2_m
+    r2_conditional = R2_c
 
     # find CSE - interaction term
     interaction = None
@@ -183,12 +203,14 @@ def extract_results(model):
         return {
             "coeff": None, 
             "p_value": None, 
+            "R2_marg": None, 
+            "R2_cond": None,
             "n_obs": model.nobs
         }
     return {
         "coeff": params[interaction], 
-        "p_value": p_values[interaction], 
+        "p_value": p_values[interaction],
+        "R2_marg": r2_marginal, 
+        "R2_cond": r2_conditional, 
         "n_obs": model.nobs
     }
-
-# R squared, results to .txt
